@@ -1,10 +1,10 @@
 (function () {
     'use strict';
     var GranularNavigator = function () {
-        this.name = 'Enhanced_Reaction_Explorer';
-        this.version = '1.0.0';
-        this.id = 'granular_spatial_nav_v53';
-    };
+    this.name = 'Enhanced_Reaction_Explorer';
+    this.version = '5.4.0';
+    this.id = 'enhanced_reaction_explorer_v54';
+};
 
     GranularNavigator.prototype.getName = function () { return this.name; };
     GranularNavigator.prototype.getVersion = function () { return this.version; };
