@@ -17,7 +17,7 @@
 
         var style = document.createElement('style'); // Create the CSS styles for the plugin interface.
         
-        style.innerHTML = `  // Add the plugin styles to the page.
+        style.innerHTML = `  
             .minerva-loader { border: 4px solid #f3f3f3; border-top: 4px solid #283593; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
             @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
             .modern-btn { border-radius: 8px; border: none; transition: 0.3s; cursor: pointer; font-family: inherit; }
@@ -44,7 +44,7 @@
             .back-btn { background: #607d8b; color: white; padding: 8px 12px; margin-bottom: 15px; font-size: 12px; font-weight: bold; }
         `;
         document.head.appendChild(style);
-// Define the visual styles of the plugin.
+
         container.innerHTML = `  
             <div style="padding:15px; background:#f4f6f9; border:1px solid #ddd; font-family: 'Segoe UI', sans-serif; height: 100%; overflow-y: auto;">
                 <h4 style="margin:0 0 15px 0; color:#283593; border-bottom: 3px solid #283593; padding-bottom:5px; text-transform: uppercase;">Enhanced Reaction Explorer</h4>
