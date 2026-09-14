@@ -44,8 +44,8 @@
             .back-btn { background: #607d8b; color: white; padding: 8px 12px; margin-bottom: 15px; font-size: 12px; font-weight: bold; }
         `;
         document.head.appendChild(style);
-
-        container.innerHTML = `  // Define the visual styles of the plugin.
+// Define the visual styles of the plugin.
+        container.innerHTML = `  
             <div style="padding:15px; background:#f4f6f9; border:1px solid #ddd; font-family: 'Segoe UI', sans-serif; height: 100%; overflow-y: auto;">
                 <h4 style="margin:0 0 15px 0; color:#283593; border-bottom: 3px solid #283593; padding-bottom:5px; text-transform: uppercase;">Enhanced Reaction Explorer</h4>
                 <button id="btnMap" class="modern-btn" style="width:100%; padding:12px; margin-bottom:15px; background:#283593; color:white; font-weight:bold;">SYNC MAP ENTITIES</button>
