@@ -1,20 +1,23 @@
-(function () {
+(function () { // Run the plugin in an isolated and strict JavaScript scope.
     'use strict';
-    var GranularNavigator = function () {
+    var GranularNavigator = function () {  // Define the plugin name, version, and unique ID.
     this.name = 'Enhanced_Reaction_Explorer';
     this.version = '5.4.0';
     this.id = 'enhanced_reaction_explorer_v54';
 };
 
-    GranularNavigator.prototype.getName = function () { return this.name; };
+    GranularNavigator.prototype.getName = function () { return this.name; }; // Provide the plugin metadata to MINERVA.
     GranularNavigator.prototype.getVersion = function () { return this.version; };
     GranularNavigator.prototype.getId = function () { return this.id; };
-
+    
+// Initialize the plugin and connect it to MINERVA.
     GranularNavigator.prototype.register = function (minervaProxy) {
-        var container = minervaProxy.element;
+        
+        var container = minervaProxy.element; // Get the UI container provided by MINERVA.
 
-        var style = document.createElement('style');
-        style.innerHTML = `
+        var style = document.createElement('style'); // Create the CSS styles for the plugin interface.
+        
+        style.innerHTML = `  // Add the plugin styles to the page.
             .minerva-loader { border: 4px solid #f3f3f3; border-top: 4px solid #283593; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
             @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
             .modern-btn { border-radius: 8px; border: none; transition: 0.3s; cursor: pointer; font-family: inherit; }
@@ -42,7 +45,7 @@
         `;
         document.head.appendChild(style);
 
-        container.innerHTML = `
+        container.innerHTML = `  // Define the visual styles of the plugin.
             <div style="padding:15px; background:#f4f6f9; border:1px solid #ddd; font-family: 'Segoe UI', sans-serif; height: 100%; overflow-y: auto;">
                 <h4 style="margin:0 0 15px 0; color:#283593; border-bottom: 3px solid #283593; padding-bottom:5px; text-transform: uppercase;">Enhanced Reaction Explorer</h4>
                 <button id="btnMap" class="modern-btn" style="width:100%; padding:12px; margin-bottom:15px; background:#283593; color:white; font-weight:bold;">SYNC MAP ENTITIES</button>
@@ -51,7 +54,7 @@
                 <button id="btnScanArea" class="modern-btn" style="width:100%; padding:12px; background:#43a047; color:white; display:none; font-weight:bold;">AUDIT COMPARTMENT</button>
                 <div id="navLog" style="margin-top:15px; font-size:13px; min-height:450px; background:#fff; border:1px solid #ddd; padding:15px; border-radius:8px;">Ready to Sync.</div>
             </div>`;
-
+// Store project data and connect variables to the main UI elements.
         var allEntities = [];
         var areas = {}; 
         var select = container.querySelector('#compDrop');
@@ -59,6 +62,7 @@
         var log = container.querySelector('#navLog');
         var loader = container.querySelector('#loaderContainer');
 
+       // Load all MINERVA entities and collect the available compartments and submaps.
         container.querySelector('#btnMap').onclick = function () {
             loader.style.display = 'block';
             minervaProxy.project.data.getAllBioEntities().then(function (entities) {
@@ -67,19 +71,20 @@
                     var type = (e._type || e.type || "").toLowerCase();
                     if (type.indexOf("compartment") !== -1 || type.indexOf("submap") !== -1) areas[e.name] = e;
                 });
+                // Show the Audit button after regions are loaded.
                 loader.style.display = 'none';
                 select.innerHTML = '<option value="">-- SELECT COMPARTMENT --</option>';
                 Object.keys(areas).sort().forEach(name => select.innerHTML += '<option value="'+name+'">'+name+'</option>');
                 select.style.display = 'block'; scanBtn.style.display = 'block';
             });
         };
-
+// Get the full data of the selected map region.
         scanBtn.onclick = function () {
             var name = select.value;
             if(!name) return;
             var box = areas[name];
             var typeBuckets = {}; 
-
+// Get the selected region and prepare the entity groups for auditing.
             allEntities.forEach(ent => {
                 var isInside = (ent.x >= (box.x - 5) && ent.x <= (box.x + box.width + 5) && ent.y >= (box.y - 5) && ent.y <= (box.y + box.height + 5));
                 var type = ent._type || ent.type || "Unknown";
@@ -88,7 +93,7 @@
                     typeBuckets[type].push(ent);
                 }
             });
-
+// Build and display the audited entity inventory with search and RXN buttons.
             var out = '<h3 style="color:#283593; margin:0 0 10px 0;">Inventory: ' + name + '</h3>' +
           '<input id="entitySearch" type="text" placeholder="Search Entity..." ' +
           'style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border:2px solid #283593; border-radius:8px;">' +
@@ -105,7 +110,7 @@
             });
             log.innerHTML = out;
 var searchInput = log.querySelector('#entitySearch');
-
+// Filter the audited entity list in real time based on the search text.
 searchInput.oninput = function () {
     var searchText = this.value.toLowerCase();
 
@@ -124,6 +129,7 @@ searchInput.oninput = function () {
 
     });
 };
+         // Fetch and display reactions for the selected entity using the MINERVA API.
             log.querySelectorAll('.ent-rxn-btn').forEach(btn => {
                 btn.onclick = function() {
                     var id = parseInt(this.getAttribute('data-id'));
@@ -135,6 +141,8 @@ searchInput.oninput = function () {
                     minervaProxy.project.data.getReactionsWithElement({id: id, modelId: mId, type: type})
                         .then(function(reactions) {
                             var html = '<button id="backToList" class="modern-btn back-btn">⬅ BACK TO LIST</button>';
+                            
+                        // Build a reaction summary card with type, ID, flow, reference, and detail table.
                             
                             reactions.forEach((rxn) => {
                                 // 1. Summary Header
@@ -180,7 +188,7 @@ searchInput.oninput = function () {
                                         <td>${Math.round(a.x)}, ${Math.round(a.y)}</td>
                                     </tr>`;
                                 });
-
+// Display reaction references and raw JSON, handle navigation, and register the plugin with MINERVA.
                                 html += `</tbody></table>`;
 
                                 if(ref) {
